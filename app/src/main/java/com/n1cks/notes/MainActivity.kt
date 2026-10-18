@@ -1,71 +1,22 @@
 package com.n1cks.notes
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.lifecycleScope
-import com.n1cks.notes.domain.usecase.AddNoteUseCase
-import com.n1cks.notes.domain.usecase.ObserveNotesUseCase
+import com.n1cks.notes.presentation.notelist.ui.screen.NoteListScreen
 import com.n1cks.notes.ui.theme.NotesTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var addNote: AddNoteUseCase
-    @Inject
-    lateinit var observeNotes: ObserveNotesUseCase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        lifecycleScope.launch {
-            addNote("Test Hilt", "Note was created")
-        }
-
-        lifecycleScope.launch {
-            observeNotes().collect { notes ->
-                Log.d("NotesCheck", "Notes: ${notes.size}, titles: ${notes.map { it.title }}")
-            }
-        }
-
         enableEdgeToEdge()
         setContent {
             NotesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                NoteListScreen()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NotesTheme {
-        Greeting("Android")
     }
 }
