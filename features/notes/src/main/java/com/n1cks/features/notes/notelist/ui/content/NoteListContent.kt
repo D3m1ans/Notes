@@ -1,5 +1,6 @@
-package com.n1cks.notes.presentation.notelist.ui.content
+package com.n1cks.features.notes.notelist.ui.content
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,13 +30,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.n1cks.notes.domain.model.Note
-import com.n1cks.notes.presentation.notelist.state.NoteListUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteListContent(
-    uiState: NoteListUiState,
-    onAddSampleNote: () -> Unit,
+    uiState: com.n1cks.features.notes.notelist.state.NoteListUiState,
+    onAddNote: () -> Unit,
+    onNoteClick: (Long) -> Unit,
     onDeleteNote: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -43,21 +44,30 @@ fun NoteListContent(
         modifier = modifier,
         topBar = { TopAppBar(title = { Text("Notes") }) },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddSampleNote) {
+            FloatingActionButton(onClick = onAddNote) {
                 Icon(Icons.Default.Add, contentDescription = "Add note")
             }
         },
     ) { innerPadding ->
         when {
-            uiState.isLoading -> CenteredBox(innerPadding) { CircularProgressIndicator() }
-            uiState.notes.isEmpty() -> CenteredBox(innerPadding) { Text("No notes") }
+            uiState.isLoading -> CenteredBox(
+                innerPadding
+            ) { CircularProgressIndicator() }
+
+            uiState.notes.isEmpty() -> CenteredBox(
+                innerPadding
+            ) { Text("No notes") }
+
             else -> LazyColumn(
                 modifier = Modifier.padding(innerPadding),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(uiState.notes, key = { it.id }) { note ->
-                    NoteItem(note = note, onDelete = {onDeleteNote(note.id)})
+                    NoteItem(
+                        note = note,
+                        onClick = { onNoteClick(note.id) },
+                        onDelete = { onDeleteNote(note.id) })
                 }
             }
         }
@@ -82,10 +92,15 @@ fun CenteredBox(
 @Composable
 private fun NoteItem(
     note: Note,
+    onClick: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+    ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically

@@ -7,6 +7,7 @@ import com.n1cks.notes.domain.usecase.AddNoteUseCase
 import com.n1cks.notes.domain.usecase.DeleteNoteUseCase
 import com.n1cks.notes.domain.usecase.GetNoteByIdUseCase
 import com.n1cks.notes.domain.usecase.ObserveNotesUseCase
+import com.n1cks.notes.domain.usecase.UpdateNoteUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,4 +39,9 @@ object AppModule {
     @Provides
     fun provideGetNoteByIdUseCase(repository: NoteRepository): GetNoteByIdUseCase =
         GetNoteByIdUseCase(repository)
+
+
+    @Provides
+    fun provideUpdateNoteUseCase(repository: NoteRepository): UpdateNoteUseCase =
+        UpdateNoteUseCase(repository)
 }

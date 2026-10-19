@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -45,6 +46,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.espresso.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -58,6 +60,7 @@ dependencies {
 
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
+    implementation(project(":features:notes"))
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -66,5 +69,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.decompose)
+    implementation(libs.decompose.extensions.compose)
+    implementation(libs.kotlinx.serialization.core)
 }

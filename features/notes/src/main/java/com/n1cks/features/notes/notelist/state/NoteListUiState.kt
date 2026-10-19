@@ -1,4 +1,4 @@
-package com.n1cks.notes.presentation.notelist.state
+package com.n1cks.features.notes.notelist.state
 
 import com.n1cks.notes.domain.model.Note
 
