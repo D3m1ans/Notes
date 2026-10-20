@@ -40,4 +40,15 @@ class ObserveNotesUseCaseTest {
 
         assertEquals(listOf("third", "second", "first"), result.map { it.title })
     }
+
+    @Test
+    fun `query filters by title or content ignoring case`() = runBlocking {
+        repository.saveNote(Note(title = "Milk", content = "", createdAt = 1L, updatedAt = 1L))
+        repository.saveNote(Note(title = "Things", content = "buy MILK", createdAt = 2L, updatedAt = 2L))
+        repository.saveNote(Note(title = "Bread", content = "", createdAt = 3L, updatedAt = 3L))
+
+        val result = observeNotes("Milk").first()
+
+        assertEquals(listOf("Things", "Milk"), result.map { it.title })
+    }
 }

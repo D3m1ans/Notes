@@ -15,6 +15,8 @@ import com.n1cks.notes.domain.usecase.AddNoteUseCase
 import com.n1cks.notes.domain.usecase.DeleteNoteUseCase
 import com.n1cks.notes.domain.usecase.GetNoteByIdUseCase
 import com.n1cks.notes.domain.usecase.ObserveNotesUseCase
+import com.n1cks.notes.domain.usecase.RestoreNoteUseCase
+import com.n1cks.notes.domain.usecase.TogglePinNoteUseCase
 import com.n1cks.notes.domain.usecase.UpdateNoteUseCase
 import com.n1cks.notes.root.child.Child
 import com.n1cks.notes.root.config.RootConfig
@@ -27,6 +29,8 @@ class RootComponent(
     private val getNoteById: GetNoteByIdUseCase,
     private val addNote: AddNoteUseCase,
     private val updateNote: UpdateNoteUseCase,
+    private val togglePinNote: TogglePinNoteUseCase,
+    private val restoreNote: RestoreNoteUseCase,
 ) : ComponentContext by componentContext {
 
     private val navigation = StackNavigation<RootConfig>()
@@ -46,6 +50,8 @@ class RootComponent(
                     componentContext = context,
                     observeNotes = observeNotes,
                     deleteNote = deleteNote,
+                    togglePinNote = togglePinNote,
+                    restoreNote = restoreNote,
                     onAddNote = { navigation.push(RootConfig.NoteEdit(NEW_NOTE_ID)) },
                     onNoteClick = { id -> navigation.push(RootConfig.NoteEdit(id)) }
                 )

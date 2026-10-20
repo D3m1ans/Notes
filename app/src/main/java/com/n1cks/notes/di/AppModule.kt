@@ -7,6 +7,8 @@ import com.n1cks.notes.domain.usecase.AddNoteUseCase
 import com.n1cks.notes.domain.usecase.DeleteNoteUseCase
 import com.n1cks.notes.domain.usecase.GetNoteByIdUseCase
 import com.n1cks.notes.domain.usecase.ObserveNotesUseCase
+import com.n1cks.notes.domain.usecase.RestoreNoteUseCase
+import com.n1cks.notes.domain.usecase.TogglePinNoteUseCase
 import com.n1cks.notes.domain.usecase.UpdateNoteUseCase
 import dagger.Module
 import dagger.Provides
@@ -44,4 +46,12 @@ object AppModule {
     @Provides
     fun provideUpdateNoteUseCase(repository: NoteRepository): UpdateNoteUseCase =
         UpdateNoteUseCase(repository)
+
+    @Provides
+    fun provideTogglePinNoteUseCase(repository: NoteRepository): TogglePinNoteUseCase =
+        TogglePinNoteUseCase(repository)
+
+    @Provides
+    fun provideRestoreNoteUseCase(repository: NoteRepository): RestoreNoteUseCase =
+        RestoreNoteUseCase(repository)
 }

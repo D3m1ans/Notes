@@ -14,6 +14,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,7 +24,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -35,14 +41,24 @@ import com.n1cks.notes.domain.model.Note
 @Composable
 fun NoteListContent(
     uiState: com.n1cks.features.notes.notelist.state.NoteListUiState,
+    query: String,
+    snackBarHostState: SnackbarHostState,
+    onQueryChange: (String) -> Unit,
     onAddNote: () -> Unit,
     onNoteClick: (Long) -> Unit,
+    onTogglePin: (Long) -> Unit,
     onDeleteNote: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { TopAppBar(title = { Text("Notes") }) },
+        topBar = {
+            Column {
+                TopAppBar(title = { Text("Notes") })
+                SearchField(query, onQueryChange)
+            }
+        },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddNote) {
                 Icon(Icons.Default.Add, contentDescription = "Add note")
@@ -56,7 +72,7 @@ fun NoteListContent(
 
             uiState.notes.isEmpty() -> CenteredBox(
                 innerPadding
-            ) { Text("No notes") }
+            ) { Text(if (query.isBlank()) "No Notes yet" else "Noting found") }
 
             else -> LazyColumn(
                 modifier = Modifier.padding(innerPadding),
@@ -67,6 +83,7 @@ fun NoteListContent(
                     NoteItem(
                         note = note,
                         onClick = { onNoteClick(note.id) },
+                        onTogglePin = { onTogglePin(note.id) },
                         onDelete = { onDeleteNote(note.id) })
                 }
             }
@@ -93,6 +110,7 @@ fun CenteredBox(
 private fun NoteItem(
     note: Note,
     onClick: () -> Unit,
+    onTogglePin: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -122,9 +140,29 @@ private fun NoteItem(
                     )
                 }
             }
+            IconButton(onClick = onTogglePin) {
+                Icon(
+                    imageVector = if (note.isPinned) Icons.Filled.Star else Icons.Outlined.Star,
+                    contentDescription = "Закрепить",
+                )
+            }
             IconButton(onClick = onDelete) {
                 Icon(Icons.Default.Delete, contentDescription = "Delete")
             }
         }
     }
+}
+
+@Composable
+private fun SearchField(query: String, onQueryChange: (String) -> Unit) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { Text("Search") },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+        singleLine = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+    )
 }
